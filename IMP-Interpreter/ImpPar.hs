@@ -141,11 +141,11 @@ com toks =
 -- parser for if-while-repeat commands
 iwr :: Parse Com
 iwr toks =
-  (key "if" `next` bexp `next` key "then" `next` com `next` key "else" `next` com `build` makeIfte
+  (key "if" `next` bexp `next` key "then" `next` catom `next` key "else" `next` catom `build` makeIfte
   `alt`
-  key "while" `next` bexp `next` key "do" `next` com `build` makeWhile
+  key "while" `next` bexp `next` key "do" `next` catom `build` makeWhile
   `alt`
-  key "repeat" `next` com `next` key "until" `next` bexp `build` makeRepeat
+  key "repeat" `next` catom `next` key "until" `next` bexp `build` makeRepeat
   `alt`
   catom
   ) toks
