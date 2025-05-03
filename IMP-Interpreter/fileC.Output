@@ -1,0 +1,60 @@
+(C if x > 0 then x:= x+1 else x := x-1, [(x, 3)]) ==> [("x",4)]
+
+(C if x > 0 then x:= x+1 else x := x-1, [(x, -3)]) ==> [("x",-4)]
+
+(C if x > 0 then x:= x+1 else x := x-1, [])
+*** Error: unitialized variable
+
+(C if x > 0 then x:= x+1 , [(x, -3)])
+*** Syntax error
+
+(C if  x*y < z+100 then output := 10 else output := 0, [(x,10), (y, 100), (z, 20)])  ==> [("x",10),("y",100),("z",20),("output",0)]
+
+(C if  x*y < z+100 then output := 10 else output := 0, [(x,1), (y, 1), (z, 20)])  ==> [("x",1),("y",1),("z",20),("output",10)]
+
+(C if true then x:= 1 else x:= 2; if false then y:= 3 else y:= 4, []) ==> [("x",1),("y",4)]
+
+(C  y:= 0; if   x >= 2   then y:=1  else y:=2 ;  y:=3, [ (x, 3)])  ==> [("x",3),("y",3)]
+
+(C  y:= 0; if   x >= 2   then y:=1  else y:=2 ;  y:=3, [ (x, 1)])  ==> [("x",1),("y",3)]
+
+(C  y:= 0; if   x >= 2   then y:=1  else (y:=2 ;  y:=3), [ (x, 3)])  ==> [("x",3),("y",1)]
+
+(C  y:= 0; if   x >= 2   then y:=1  else (y:=2 ;  y:=3), [ (x, 1)])  ==> [("x",1),("y",3)]
+
+(C  if x>0 then sign:= 1 else sign := -1, [(x, -3)]) ==> [("x",-3),("sign",-1)]
+
+(C  if x>0 then sign:= 1 else sign := -1, [(x,  3)]) ==> [("x",3),("sign",1)]
+
+(C if x>y then (max:= x; min := y )  else (min:= x; max := y), [ (x,1), (y, 5)]) ==> [("x",1),("y",5),("min",1),("max",5)]
+
+(C if x>y then (max:= x; min := y )  else (min:= x; max := y), [ (x,10), (y, 3)]) ==> [("x",10),("y",3),("max",10),("min",3)]
+
+
+
+(C a:=0; b:=0; if x >= 0 then a:= 1 else a := 2; if y >= 0 then b:= 1 else b:=2, [ (x,3), (y, 3)]) ==> [("x",3),("y",3),("a",1),("b",1)]
+
+(C a:=0; b:=0; if x >= 0 then a:= 1 else (a := 2; if y >= 0 then b:= 1 else b:=2), [ (x,3), (y, 3)]) ==> [("x",3),("y",3),("a",1),("b",0)]
+
+
+(C if x < 0 then (a := 1; b:= 1) else (a:= 0; if   y <= 0  then a:= 2 else b:=2), [(x, -30)]) ==> [("x",-30),("a",1),("b",1)]
+
+(C if x < 0 then (a := 1; b:= 1) else  a:= 0; if   y <= 0  then a:= 2 else b:=2, [(x, -30)])
+*** Error: unitialized variable
+
+(C if x < 0 then (a := 1; b:= 1) else  a:= 0; if   y <= 0  then a:= 2 else b:=2, [(x, -30), (y, -5)]) ==> [("x",-30),("y",-5),("a",2),("b",1)]
+
+(C if x < 0 then a := 1; b:= 1  else (a:= 0; if   y <= 0  then a:= 2 else b:=2), [(x, -30)])
+*** Syntax error
+
+(C if x < 0 then if  y <0 then a:=1 else a:=2 else b:=1, [(x, -30), (y,7)])
+*** Syntax error
+
+(C if x < 0 then (if  y <0 then a:=1 else a:=2) else b:=1, [(x, -30), (y,7)]) ==> [("x",-30),("y",7),("a",2)]
+
+
+(C if x >= 0 then a:= 1 else if y >= 0 then b:= 1 else b:=2, [ (x,-3), (y, 3)])
+*** Syntax error
+
+(C if x >= 0 then a:= 1 else (if y >= 0 then b:= 1 else b:=2), [ (x,-3), (y, 3)]) ==> [("x",-3),("y",3),("b",1)]
+

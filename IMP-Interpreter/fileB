@@ -1,0 +1,33 @@
+(C   x:= 1,  [])
+
+(C  x:=1 ; y:=2 ; z:=3, [])
+
+(C (x:=1; x:= x+1), [])
+
+(C (x:=1, x:= x+1), [])
+
+(C (x:=1; x = x+1), [])
+
+(C x:= y+1, [])
+
+(C (x:= y+1; y:=1), [])
+
+(C  x:= 1; y:= x+1; z:= 3* (x+y), [])
+
+(C  x:= (y + z)* n, [(y,1), (z,10), (n, 2)])
+
+(C  x:= (y + z)* n, [(y,-1), (z,-10), (n, -2)])
+
+(C  x:= 1; y:= 2; z:= (x+y), [])
+
+(C cubevolume :=  side * side*side  ,  [(side , 2)])
+
+(C cubearea :=  6* side * side,  [(side, 2)])
+
+(C cuboidarea := 2 *a *b + 2 * a*c + 2 *b *c, [(a, 2), (b,1), (c, 3)])
+
+(C cuboidvolume :=  a*b*c, [(a, 2), (b,1), (c, 3)])
+
+(C   age := thisYear - birthYear, [(thisYear, 2025), (birthYear, 2000)])
+
+
