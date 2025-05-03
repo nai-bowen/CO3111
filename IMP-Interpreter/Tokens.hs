@@ -1,10 +1,3 @@
-
----------------------------------------------------------------------------
--- HASKELL TOKENS FOR EXPRESSIONS AND COMMANDS FOR IMPERATIVE LANGUAGE IMP                          
--- Roy L. Crole and Paula Severi 2025                                          
----------------------------------------------------------------------------
-
-
 module Tokens where
 
 import Basic
@@ -31,61 +24,42 @@ keywords = ["true","false","while","do","if","then","else","run","eval","trans",
 symbols :: IMPwords
 symbols = ["(",")","+","-","*","<=",">=","<",">",";",":=","[",",","]","[]"]
 
--- complete the code for is_letter
-{--
+-- Checking if a character is a letter
 is_letter :: Char -> Bool
-is_letter c = 'A'<=c && c<='Z' || ???
---}
+is_letter c = 'A'<=c && c<='Z' || 'a'<=c && c<='z'
 
--- complete the code for is_digit
-{--
-is_digit c = '0'<=c && ??
---}
+-- Checking if a character is a digit
+is_digit :: Char -> Bool
+is_digit c = '0'<=c && c<='9'
 
 is_neg c = '-' == c 
 
 specials = ",!@#$%^&*()_-+=|[]:;'~`<>.?/"
 
--- delete the comment from is_special if you have already coded mem in Basics.hs
-
-{-- 
+-- Check if a character is a special symbol
 is_special c = c `mem` specials
---}
 
-
--- complete the code for the function alpha
-{--
+-- Takes as many letters in sequence from IMPfile as possible
 alpha :: (String, IMPFile) -> (String, IMPFile)
 alpha (al, c:cs) = if is_letter c then alpha(al++[c],cs) else (al, c:cs)
-alpha (al,[]) = ???
---}
+alpha (al,[]) = (al, [])
 
-
--- complete the code for the function numeric
-{--
+-- Takes as many digits in sequence from IMPfile as possible
 numeric :: (String, IMPFile) -> (String, IMPFile)
-numeric (nu, c:cs) = ???
-numeric (nu,[]) = ???
---}
+numeric (nu, c:cs) = if is_digit c then numeric(nu++[c],cs) else (nu, c:cs)
+numeric (nu,[]) = (nu, [])
 
--- complete the code for symbolic
-{--
+-- Takes as many special symbols in sequence from IMPfile as possible (up to 2)
 symbolic :: (String, IMPFile) -> (String, IMPFile)
 symbolic (sy, c:cs) = 
-  if ??? then ??? else
-    if
-      (sy++[c]) `mem` ???
+  if not (is_special c) then (sy, c:cs) else
+    if (sy++[c]) `mem` symbols
     then
-      symbolic (???, ???)
-    else ???
+      symbolic (sy++[c], cs)
+    else (sy, c:cs)
 symbolic (sy, []) = (sy, [])
 
---}
-
-----------------------------------
--- complete the code for scanning
------------------------------------
-{--
+-- Scan the input and convert it to tokens
 scanning :: (Tokens, IMPFile) -> Tokens 
 scanning (toks, []) = toks
 scanning (toks, c:cs) = 
@@ -95,20 +69,14 @@ scanning (toks, c:cs) =
         let (al, cs2) = alpha([c],cs) in 
         if al `mem` keywords then scanning (toks++[Key al],cs2) else scanning (toks++[Id al],cs2)
       else 
-        if is_digit c  then
-          ???
+        if is_digit c then
+          let (nu, cs2) = numeric([c],cs) in scanning (toks++[Num nu],cs2)
         else 
-          if ??? then
-            ???
+          if is_special c then
+            let (sy, cs2) = symbolic([c],cs) in scanning (toks++[Key sy],cs2)
           else
-              scanning (toks,cs)
- --}           
-
-
--- Delete the comments for tokenize once you code scanning
-{--
+            scanning (toks,cs)
+            
+-- Main function to convert an IMPFile to Tokens
 tokenize :: IMPFile -> Tokens 
 tokenize impf = scanning([], impf)
---}
-
-
