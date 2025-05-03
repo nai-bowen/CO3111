@@ -1,9 +1,0 @@
-GHCi, version 9.4.8: https://www.haskell.org/ghc/  :? for help
-[1 of 2] Compiling Main             ( HUnitTests/TestBasic.hs, interpreted )
-Ok, one module loaded.
-[1 of 2] Compiling Main             ( HUnitTests/TestBasic.hs, interpreted )
-Ok, one module loaded.
-[1 of 2] Compiling Main             ( HUnitTests/TestBasic.hs, interpreted )
-Ok, one module loaded.
-signal: 1
-Leaving GHCi.
