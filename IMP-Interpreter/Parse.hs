@@ -1,16 +1,10 @@
---------------------------------------------------------------------
--- HASKELL PARSING LIBRARY                       
--- Roy Crole and Paula Severi 2025
---------------------------------------------------------------------
-
-
 module Parse  where
 
 import Tokens
 import AST
 
 --- Delete the comment from  next once you completed the code for that function 
--- infixr 5 `next`  
+infixr 5 `next`  
 infixl 3 `build`
 infixl 0 `alt`
 
@@ -27,27 +21,25 @@ type Parse a  = Tokens -> Either Error (a,Tokens)
 -------------------
 
 
--- complete the code for key
+-- Parser for a specific keyword or symbol
 key :: IMPword -> Parse IMPword
-key kws (Key x : toks) = if kws==x then Right(x,toks) else Left  SyntaxError  -- ("Found a Key Token .. " ++ x ++ " .. but it does not match the input keyword/symbol"))
-key kws _ = Left  SyntaxError  -- "Can't find the keyword/symbol .. "
+key kws (Key x : toks) = if kws==x then Right(x,toks) else Left SyntaxError
+key kws _ = Left SyntaxError
 
 
--- complete the code for idr 
-{--
+-- Parser for an identifier
 idr :: Parse IMPword
-idr (Id x : toks) = ???
-idr toks = ???
---}
+idr (Id x : toks) = Right(x, toks)
+idr toks = Left SyntaxError
 
--- complete the code for num
-{--
+
+-- Parser for a number
 num :: Parse IMPword
-???
+num (Num x : toks) = Right(x, toks)
+num toks = Left SyntaxError
 
---}
 
- -------------------------
+-------------------------
 -- Parsing combinators --
 -------------------------
 
@@ -58,24 +50,21 @@ alt ph1 ph2 toks = case ph1 toks of
                      Right(r,toks') -> Right(r,toks')
 
 
--- complete the code for  next 
-{--
+-- Sequencing of parsers
 next :: Parse a -> Parse b -> Parse (a,b)
 next ph1 ph2 toks = case ph1 toks of
-                    ???
+                    Left err -> Left err
+                    Right(r1, toks1) -> case ph2 toks1 of
+                                        Left err -> Left err
+                                        Right(r2, toks2) -> Right((r1, r2), toks2)
 
 
---}
-
--- Repetition -
-
-{-- Delete this comment when you completed next
- 
+-- Repetition
 many :: Parse a -> Parse [a] 
 many ph  = (ph `next` many ph `build` cons) `alt` (\toks -> Right([], toks))
              where
              cons (x,xs) = x:xs
---}
+
 
 -- Semantic action. The results from a parser ph are transformed by applying a function f.
 build :: Parse a -> (a -> b) -> Parse b 
@@ -90,15 +79,9 @@ build ph f toks = case ph toks of
 -- function:
 -- Note there is an error if the input file is not fully consumed by ph 
 
-{--
 reader :: Parse a -> IMPFile -> Either Error a
 reader ph impf
   = case ph (tokenize impf) of
       Right (result,[]) ->  Right result
       Right (result, s) -> Left SyntaxError
       Left  error   -> Left error
-
-      --}
-  
-
-

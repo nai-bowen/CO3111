@@ -1,15 +1,7 @@
-  
---------------------------------------------------------------------
--- HASKELL IMP LANGUAGE PARSING LIBRARY                   
--- Roy Crole and Paula Severi 2025                                         
---------------------------------------------------------------------
-
-
 module ImpPar where
 
 import Basic
 import AST
--- import Pretty 
 import Tokens
 import Parse
 
@@ -30,12 +22,10 @@ str_to_b s = if s == "true" then True else False
 -- Top Level Parsing Functions  --
 ----------------------------------
 
-{--
-
 readins :: IMPFile -> Either Error Instruction
 readins = reader ins 
 
-readstate :: IMPFile -> Either Error  State 
+readstate :: IMPFile -> Either Error State 
 readstate = reader state
 
 readprog :: IMPFile -> Either Error Prog
@@ -49,8 +39,6 @@ readiexp = reader iexp
 
 readbexp :: IMPFile -> Either Error BoolExp 
 readbexp = reader bexp
-
---}
 
 ---------------------
 -- Build Functions --
@@ -86,26 +74,29 @@ makePMT (a, la) = let mPM e1 (op,e2) =
                           "*" -> IopExp(Times,e1,e2) 
                       in foldl mPM a la
                       
---- Complete
---- makeBool (ie1,(op,ie2)) = ???
+-- Create a boolean expression from an integer expression and an operator
+makeBool (ie1,(op,ie2)) = 
+  case op of
+    "<" -> BopExp(Le,ie1,ie2)
+    ">" -> BopExp(Gr,ie1,ie2)
+    "<=" -> BopExp(LeEq,ie1,ie2)
+    ">=" -> BopExp(GrEq,ie1,ie2)
 
 makeComFromAtom  ("(",(c,")")) = c
 makeAss (v,(":=",e)) = Ass (v,e)
 
----Complete
---- makeSeq (c,lc) = let mSeq c1 (";",c2) = Seq (c1,c2) in ???
+-- Build a sequence of commands using left-associativity
+makeSeq (c,lc) = let mSeq c1 (";",c2) = Seq (c1,c2) in foldl mSeq c lc
 
 makeIfte ("if",(be,("then",(c1,("else",c2))))) = If (be,c1,c2)
 makeWhile ("while",(be,("do",c))) = While (be,c) 
 
---- Complete 
---- makeRepeat("repeat", (c, ("until", be))) =  ???
+-- Build a repeat-until loop
+makeRepeat ("repeat", (c, ("until", be))) = Repeat (c, be)
 
 ----------------------------
 -- The Combinatory Parser --
 ----------------------------
-
-{--
 
 -- parser for an IMP instruction
 ins :: Parse Instruction
@@ -141,42 +132,33 @@ code toks = (key"C" `next` com `build` makeCCode
              `alt`
              key"E" `next` iexp `build` makeECode) toks
 
---}
-
 -- parser for IMP commands
--- Complete 
-{-- 
 com :: Parse Com
 com toks = 
-  (iwr `next` many (key ";" `next` ???) `build` makeSeq 
+  (iwr `next` many (key ";" `next` iwr) `build` makeSeq 
   ) toks
   
-
-  
-  
+-- parser for if-while-repeat commands
 iwr :: Parse Com
 iwr toks =
-  ???  `build` makeIfte
+  (key "if" `next` bexp `next` key "then" `next` com `next` key "else" `next` com `build` makeIfte
   `alt`
-  ??? `build` makeWhile
+  key "while" `next` bexp `next` key "do" `next` com `build` makeWhile
   `alt`
-  ??? `build` makeRepeat
+  key "repeat" `next` com `next` key "until" `next` bexp `build` makeRepeat
   `alt`
-  catom 
+  catom
   ) toks
   
+-- parser for command atoms (assignment or command in parentheses)
 catom  :: Parse Com
 catom toks = 
-  ( ???   build` makeAss 
+  (idr `next` key ":=" `next` iexp `build` makeAss 
   `alt` 
-   ??? `build` makeComFromAtom
+   key "(" `next` com `next` key ")" `build` makeComFromAtom
   ) toks
   
-
---}
-       
 -- parser for IMP Boolean expressions
-{--
 bexp :: Parse BoolExp
 bexp toks = 
   (iexp
@@ -188,8 +170,7 @@ bexp toks =
    `alt` batom
   ) toks
 
-
-
+-- parser for boolean atoms (true/false or boolean in parentheses)
 batom :: Parse BoolExp
 batom toks = 
   (key"true"  `build` (Bool . str_to_b)
@@ -198,23 +179,20 @@ batom toks =
    `alt`
    key"(" `next` bexp `next` key")"  `build` makeExpFromAtom
   )  toks
-  --}
-  
   
 -- parser for IMP integer expressions
--- Complete 
-{-- 
 iexp :: Parse IntExp
 iexp toks = 
-  ( ???  `build` makePMT
+  (factor `next` many ((key"+" `alt` key"-") `next` factor) `build` makePMT
   ) toks
+
+-- parser for factors (term * term)
 factor :: Parse IntExp
 factor toks = 
-  (  ??? `build` makePMT
+  (iatom `next` many (key"*" `next` iatom) `build` makePMT
   ) toks
   
- 
-  
+-- parser for integer atoms (variable, constant, or expression in parentheses)
 iatom :: Parse IntExp
 iatom toks = 
   (idr `build` makeVar 
@@ -224,10 +202,9 @@ iatom toks =
    key"(" `next` iexp `next` key")"  `build` makeExpFromAtom
   ) toks
 
---}
 -- parser for IMP integers
 -- NOTE the type
 integer :: Parse IMPFile
 integer toks = ( num
                 `alt`
-                 key"-" `next` num `build` makeNegNum ) toks 
+                 key"-" `next` num `build` makeNegNum ) toks
