@@ -1,9 +1,13 @@
+--------------------------------------------------------------------
+-- HASKELL PARSING LIBRARY                       
+-- Roy Crole and Paula Severi 2025
+--------------------------------------------------------------------
+
 module Parse  where
 
 import Tokens
 import AST
 
---- Delete the comment from  next once you completed the code for that function 
 infixr 5 `next`  
 infixl 3 `build`
 infixl 0 `alt`

@@ -31,20 +31,20 @@ data Iop = Plus | Minus | Times
              deriving (Eq,Show)
 
 -- Commands in IMP
-data Com = Ass (V, IntExp)                      -- Assignment: x := e
-         | Seq (Com, Com)                       -- Sequence: c1 ; c2
-         | If (BoolExp, Com, Com)               -- Conditional: if b then c1 else c2
-         | While (BoolExp, Com)                 -- While loop: while b do c
-         | Repeat (Com, BoolExp)                -- Repeat-until: repeat c until b
+data Com = Ass (V, IntExp)                 
+         | Seq (Com, Com)                       
+         | If (BoolExp, Com, Com)               
+         | While (BoolExp, Com)                
+         | Repeat (Com, BoolExp)                
          deriving (Eq, Show)
              
 -- Boolean expressions
-data BoolExp = Bool B                           -- Boolean constant: true, false
-             | BopExp (Bop, IntExp, IntExp)     -- Comparison: e1 < e2, e1 <= e2, etc.
+data BoolExp = Bool B                          
+             | BopExp (Bop, IntExp, IntExp)    
              deriving (Eq, Show)
              
 -- Integer expressions
-data IntExp = Int Z                             -- Integer constant: 5, -3, etc.
-            | Var V                             -- Variable: x, y, etc.
-            | IopExp (Iop, IntExp, IntExp)      -- Operation: e1 + e2, e1 - e2, etc.
+data IntExp = Int Z                            
+            | Var V                             
+            | IopExp (Iop, IntExp, IntExp)      
             deriving (Eq, Show)

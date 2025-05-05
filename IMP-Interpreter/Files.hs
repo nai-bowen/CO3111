@@ -1,3 +1,7 @@
+---------------------------------------------------------------------
+-- MAIN FILE: HASKELL USERS' FUNCTIONS FOR IMP                                 
+-- Roy L. Crole and Paula Severi 2025                                              
+---------------------------------------------------------------------
 module Files where
 
 import System.Directory

@@ -1,3 +1,9 @@
+  
+--------------------------------------------------------------------
+-- HASKELL IMP LANGUAGE PARSING LIBRARY                   
+-- Roy Crole and Paula Severi 2025                                         
+--------------------------------------------------------------------
+
 module ImpPar where
 
 import Basic
@@ -85,13 +91,11 @@ makeBool (ie1,(op,ie2)) =
 makeComFromAtom  ("(",(c,")")) = c
 makeAss (v,(":=",e)) = Ass (v,e)
 
--- Build a sequence of commands using left-associativity
 makeSeq (c,lc) = let mSeq c1 (";",c2) = Seq (c1,c2) in foldl mSeq c lc
 
 makeIfte ("if",(be,("then",(c1,("else",c2))))) = If (be,c1,c2)
 makeWhile ("while",(be,("do",c))) = While (be,c) 
 
--- Build a repeat-until loop
 makeRepeat ("repeat", (c, ("until", be))) = Repeat (c, be)
 
 ----------------------------
@@ -203,7 +207,6 @@ iatom toks =
   ) toks
 
 -- parser for IMP integers
--- NOTE the type
 integer :: Parse IMPFile
 integer toks = ( num
                 `alt`
